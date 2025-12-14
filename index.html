@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>自动漂浮祝福语气泡</title>
-    <meta name="description" content="微信专属｜多气泡祝福语自动浮现消失动画">
+    <title>日常问候气泡动画</title>
+    <meta name="description" content="微信专属｜日常问候多气泡自动浮现消失动画">
     <style>
         * {
             margin: 0;
@@ -15,7 +15,8 @@
         }
         
         body {
-            background: linear-gradient(120deg, #fdfbfb 0%, #ebedee 100%);
+            /* 温馨浅色系背景，与气泡颜色不重合 */
+            background: linear-gradient(120deg, #f5f7fa 0%, #e4eaf5 100%);
             min-height: 100vh;
             overflow: hidden; /* 禁止滚动 */
             position: relative;
@@ -26,6 +27,8 @@
             width: 100vw;
             height: 100vh;
             position: relative;
+            /* 防止气泡溢出容器 */
+            overflow: hidden;
         }
         
         /* 通用气泡样式 */
@@ -41,34 +44,49 @@
             z-index: 10;
             /* 核心动画：浮现→漂浮→消失 */
             animation: bubble-animation linear forwards;
-            /* 文字禁止换行 */
-            white-space: nowrap;
-            /* 防止文字溢出 */
-            max-width: 80%;
+            /* 文字自动换行，避免过长超出 */
+            white-space: normal;
+            /* 固定最大宽度，确保不超屏 */
+            max-width: 280px;
+            /* 强制不超出容器 */
+            left: 0;
+            right: 0;
+            margin-left: auto;
+            margin-right: auto;
         }
         
         /* 气泡样式1：圆形渐变 */
         .bubble-type-1 {
             background: linear-gradient(45deg, #ff9a9e 0%, #fad0c4 99%);
             border-radius: 50%;
+            /* 圆形气泡固定尺寸，避免变形 */
+            width: 220px;
+            height: 220px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
         }
         
         /* 气泡样式2：云朵形渐变 */
         .bubble-type-2 {
             background: linear-gradient(45deg, #84fab0 0%, #8fd3f4 100%);
             border-radius: 50% 50% 30% 50%;
+            max-width: 240px;
         }
         
         /* 气泡样式3：胶囊形渐变 */
         .bubble-type-3 {
             background: linear-gradient(45deg, #ffecd2 0%, #fcb69f 100%);
             border-radius: 50px;
+            max-width: 260px;
         }
         
         /* 气泡样式5：方形圆角渐变 */
         .bubble-type-5 {
             background: linear-gradient(45deg, #e0c3fc 0%, #8ec5fc 100%);
             border-radius: 20px;
+            max-width: 250px;
         }
         
         /* 气泡核心动画：渐入→漂浮→渐出 */
@@ -79,35 +97,59 @@
             }
             10% {
                 opacity: 1;
-                transform: translateY(calc(100vh - 200px)) rotate(5deg) scale(1);
+                transform: translateY(calc(100vh - 200px)) rotate(3deg) scale(1);
             }
             30% {
-                transform: translateY(calc(100vh - 300px)) rotate(-5deg) scale(1.05);
+                transform: translateY(calc(100vh - 300px)) rotate(-3deg) scale(1.05);
             }
             50% {
-                transform: translateY(calc(100vh - 400px)) rotate(5deg) scale(1);
+                transform: translateY(calc(100vh - 400px)) rotate(3deg) scale(1);
             }
             70% {
-                transform: translateY(calc(100vh - 500px)) rotate(-5deg) scale(0.95);
+                transform: translateY(calc(100vh - 500px)) rotate(-3deg) scale(0.95);
             }
             90% {
                 opacity: 1;
-                transform: translateY(calc(100vh - 600px)) rotate(5deg) scale(0.9);
+                transform: translateY(calc(100vh - 600px)) rotate(3deg) scale(0.9);
             }
             100% {
                 opacity: 0;
-                transform: translateY(-100px) rotate(-5deg) scale(0.8);
+                transform: translateY(-100px) rotate(-3deg) scale(0.8);
             }
         }
         
-        /* 适配小屏手机 */
+        /* 适配小屏手机（确保气泡不超屏） */
         @media (max-width: 480px) {
             .blessing-bubble {
-                padding: 15px 22px;
+                padding: 15px 20px;
                 font-size: 16px;
+                max-width: 220px;
             }
-            .bubble-type-4 {
-                padding: 20px;
+            .bubble-type-1 {
+                width: 180px;
+                height: 180px;
+                padding: 15px;
+            }
+            .bubble-type-2 {
+                max-width: 200px;
+            }
+            .bubble-type-3 {
+                max-width: 220px;
+            }
+            .bubble-type-5 {
+                max-width: 210px;
+            }
+        }
+
+        /* 适配大屏手机/平板 */
+        @media (min-width: 768px) {
+            .blessing-bubble {
+                max-width: 320px;
+                font-size: 20px;
+            }
+            .bubble-type-1 {
+                width: 260px;
+                height: 260px;
             }
         }
     </style>
@@ -116,9 +158,8 @@
     <div class="container" id="container"></div>
 
     <script>
-        // 海量祝福语库（可自行扩展）
+        // 50条纯日常问候祝福语库（无重复、风格温馨）
         const blessings = [
-            // 日常问候
             "早安☀️ 新的一天元气满满",
             "晚安🌙 愿好梦伴你入眠",
             "今天也要开开心心哦～",
@@ -129,35 +170,61 @@
             "生活有点甜，烦恼全不见🍬",
             "保持好心情，万事皆顺意😊",
             "平凡的日子也值得被温柔对待",
-            
-            
-            
-            // 友情祝福
-            "有你这样的朋友真好👭",
-            "愿我们的友谊长长久久🤝",
-            "一起变成更好的人吧✨",
-            "谢谢你一直都在💖",
-            "好朋友就是要一辈子👫",
-            
-            // 职场祝福
-            "工作顺利💼 步步高升",
-            "加油💪 你超棒的",
-            "愿你前程似锦🌟 未来可期",
-            "升职加薪💰 指日可待",
-            "付出终有回报✨ 继续努力"
+            "记得按时吃饭，照顾好自己🥢",
+            "微风正好，不负时光不负你🍃",
+            "小小的美好，藏在日常的角落✨",
+            "慢慢来，一切都会变好的💪",
+            "抬头看看天，烦恼都消散☁️",
+            "今天的你，也超棒的👍",
+            "简单的幸福，就是最好的幸福🥰",
+            "别焦虑，生活慢慢来🌸",
+            "一杯咖啡，治愈所有疲惫☕",
+            "阳光洒下来，好运自然来☀️",
+            "把烦恼丢掉，快乐才会来💨",
+            "平凡日常，也是限量版哦💫",
+            "愿你被温柔以待，平安喜乐❤️",
+            "忙完记得歇一歇，别太累啦😘",
+            "生活的温柔，都藏在细碎的美好里🌷",
+            "晨起有粥温，暮有烟火气🍲",
+            "日子缓缓，生活散散🍂",
+            "把普通的日子过得浪漫一点💐",
+            "风里有温柔，日子有盼头🌬️",
+            "平安喜乐，岁岁无忧🧸",
+            "温柔半两，从容一生🌿",
+            "三餐四季，温柔有趣🍽️",
+            "万事顺意，毫无蹉跎🌟",
+            "日子清净，抬头皆是温柔☁️",
+            "浅浅喜，静静爱，稳稳走🐾",
+            "慢品人间烟火色，闲观万事岁月长🔥",
+            "愿你眼里的星星，温柔又明亮✨",
+            "生活甜甜，好运连连🍭",
+            "偶尔摆烂，永远可爱🥳",
+            "心怀浪漫宇宙，也珍惜人间日常🌌",
+            "日子简单，快乐也简单🥳",
+            "不慌不忙，慢慢来也是一种诚意⏳",
+            "好好生活，慢慢相遇👋",
+            "别让生活的压力挤走快乐😜",
+            "做自己的光，不需要太亮🌟",
+            "用心感受，生活处处是温柔💖",
+            "把快乐装进口袋，随身携带🎒",
+            "今日份美好，请查收📮",
+            "生活虽平凡，好在有温暖🌞",
+            "愿美好与温柔，如约而至💐",
+            "细碎的美好，拼凑成温柔的日常✨"
         ];
 
-        // 气泡样式类型
-        const bubbleTypes = ['bubble-type-1', 'bubble-type-2', 'bubble-type-3', 'bubble-type-4', 'bubble-type-5'];
+        // 移除星星形，仅保留4种气泡样式
+        const bubbleTypes = ['bubble-type-1', 'bubble-type-2', 'bubble-type-3', 'bubble-type-5'];
         const container = document.getElementById('container');
         
-        // 配置项（可自定义调整）
+        // 优化后的配置项（确保气泡不超屏）
         const config = {
-            bubbleCount: 20,          // 同时最大气泡数量
+            bubbleCount: 15,          // 同时最大气泡数量
             animationDuration: 10,    // 单个气泡动画时长（秒）
-            createInterval: 0.5,       // 生成新气泡的间隔（秒）
-            minLeft: 5,              // 气泡左侧最小位置（%）
-            maxLeft: 70              // 气泡左侧最大位置（%）
+            createInterval: 0.7,      // 生成新气泡的间隔（秒）
+            // 位置范围优化：结合气泡宽度，确保不超屏
+            minLeft: 5,               // 气泡左侧最小位置（%）
+            maxLeft: 90               // 气泡左侧最大位置（%）
         };
 
         // 生成随机祝福语
@@ -172,33 +239,45 @@
             return bubbleTypes[randomIndex];
         }
 
-        // 生成随机左侧位置（%）
+        // 生成安全的随机位置（确保气泡完全在屏幕内）
         function getRandomLeft() {
-            return Math.floor(Math.random() * (config.maxLeft - config.minLeft) + config.minLeft);
+            // 根据屏幕宽度动态计算，避免气泡超出
+            const screenWidth = window.innerWidth;
+            const bubbleMaxWidth = 320; // 气泡最大宽度
+            const maxSafeLeft = screenWidth - bubbleMaxWidth - 20; // 留出20px边距
+            const leftPercent = Math.floor(Math.random() * (config.maxLeft - config.minLeft) + config.minLeft);
+            
+            // 转换为像素值，确保绝对不超屏
+            const leftPx = (screenWidth * leftPercent) / 100;
+            return Math.min(leftPx, maxSafeLeft) + 'px';
         }
 
-        // 创建单个气泡
+        // 创建单个气泡（确保不超屏）
         function createBubble() {
-            // 限制同时存在的气泡数量，避免卡顿
+            // 限制同时存在的气泡数量，避免卡顿和重叠
             const currentBubbles = document.querySelectorAll('.blessing-bubble');
             if (currentBubbles.length >= config.bubbleCount) return;
 
             // 创建气泡元素
             const bubble = document.createElement('div');
-            bubble.className = `blessing-bubble ${getRandomBubbleType()}`;
+            const bubbleType = getRandomBubbleType();
+            bubble.className = `blessing-bubble ${bubbleType}`;
             bubble.textContent = getRandomBlessing();
             
-            // 设置随机位置
-            bubble.style.left = `${getRandomLeft()}%`;
+            // 设置安全的随机位置（像素值，避免百分比超屏）
+            bubble.style.left = getRandomLeft();
+            // 取消margin:auto，改用left确保位置随机且不超屏
+            bubble.style.marginLeft = '0';
+            bubble.style.marginRight = '0';
             
-            // 设置随机动画时长（±2秒）
+            // 设置随机动画时长（±2秒），避免气泡同步消失
             const randomDuration = config.animationDuration + (Math.random() * 4 - 2);
             bubble.style.animationDuration = `${randomDuration}s`;
             
             // 添加到页面
             container.appendChild(bubble);
             
-            // 动画结束后移除气泡
+            // 动画结束后移除气泡，释放内存
             setTimeout(() => {
                 bubble.remove();
             }, randomDuration * 1000);
@@ -206,17 +285,24 @@
 
         // 初始化：循环创建气泡
         function init() {
-            // 立即创建第一批气泡
-            for (let i = 0; i < 3; i++) {
-                setTimeout(createBubble, i * 500);
+            // 立即创建第一批气泡（6个，快速铺满但不拥挤）
+            for (let i = 0; i < 6; i++) {
+                setTimeout(createBubble, i * 250);
             }
             
             // 定时创建新气泡
             setInterval(createBubble, config.createInterval * 1000);
         }
 
-        // 页面加载完成后启动
+        // 页面加载完成后启动，适配屏幕尺寸
         window.addEventListener('load', init);
+        // 屏幕尺寸变化时重新计算位置（适配旋转）
+        window.addEventListener('resize', () => {
+            const bubbles = document.querySelectorAll('.blessing-bubble');
+            bubbles.forEach(bubble => {
+                bubble.style.left = getRandomLeft();
+            });
+        });
     </script>
 </body>
 </html>
