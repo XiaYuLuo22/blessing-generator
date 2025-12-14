@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>可爱祝福语动画</title>
-    <meta name="description" content="超萌祝福语气泡动画，微信专属">
+    <title>自动漂浮祝福语气泡</title>
+    <meta name="description" content="微信专属｜多气泡祝福语自动浮现消失动画">
     <style>
         * {
             margin: 0;
@@ -17,279 +17,231 @@
         body {
             background: linear-gradient(120deg, #fdfbfb 0%, #ebedee 100%);
             min-height: 100vh;
-            overflow: hidden; /* 防止滚动 */
+            overflow: hidden; /* 禁止滚动 */
             position: relative;
         }
         
-        /* 页面容器 */
+        /* 页面容器 - 全屏 */
         .container {
             width: 100vw;
             height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
             position: relative;
-            z-index: 1;
         }
         
-        /* 标题动画 */
-        .title {
-            color: #ff6b8b;
-            font-size: 28px;
-            margin-bottom: 40px;
-            text-shadow: 2px 2px 4px rgba(255,107,139,0.2);
-            animation: bounce 2s infinite alternate;
-            text-align: center;
-        }
-        
-        /* 主气泡（带文字动画） */
-        .main-bubble {
-            padding: 30px 40px;
-            border-radius: 50px;
-            background: linear-gradient(45deg, #ff9a9e 0%, #fad0c4 99%);
+        /* 通用气泡样式 */
+        .blessing-bubble {
+            position: absolute;
+            padding: 20px 28px;
             color: white;
-            font-size: 22px;
+            font-size: 18px;
             font-weight: 500;
             text-align: center;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.15);
-            position: relative;
-            z-index: 2;
-            animation: float 3s ease-in-out infinite, pulse 2s infinite alternate;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+            border-radius: 50px;
+            z-index: 10;
+            /* 核心动画：浮现→漂浮→消失 */
+            animation: bubble-animation linear forwards;
+            /* 文字禁止换行 */
+            white-space: nowrap;
+            /* 防止文字溢出 */
             max-width: 80%;
         }
         
-        /* 漂浮的小气泡（随机动画） */
-        .float-bubble {
-            position: absolute;
+        /* 气泡样式1：圆形渐变 */
+        .bubble-type-1 {
+            background: linear-gradient(45deg, #ff9a9e 0%, #fad0c4 99%);
             border-radius: 50%;
-            background: rgba(255, 154, 158, 0.6);
-            opacity: 0.7;
-            animation: float-random linear infinite;
-            z-index: 0;
         }
         
-        /* 云朵气泡样式 */
-        .float-bubble.cloud {
+        /* 气泡样式2：云朵形渐变 */
+        .bubble-type-2 {
+            background: linear-gradient(45deg, #84fab0 0%, #8fd3f4 100%);
             border-radius: 50% 50% 30% 50%;
-            background: rgba(132, 250, 176, 0.6);
         }
         
-        /* 星星气泡样式 */
-        .float-bubble.star {
-            clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
-            background: rgba(250, 139, 255, 0.6);
-        }
-        
-        /* 胶囊气泡样式 */
-        .float-bubble.capsule {
+        /* 气泡样式3：胶囊形渐变 */
+        .bubble-type-3 {
+            background: linear-gradient(45deg, #ffecd2 0%, #fcb69f 100%);
             border-radius: 50px;
-            background: rgba(255, 209, 255, 0.6);
         }
         
-        /* 文字渐入动画 */
-        .text-animate {
-            animation: fadeInUp 1.5s ease-out forwards;
-            opacity: 0;
+        /* 气泡样式5：方形圆角渐变 */
+        .bubble-type-5 {
+            background: linear-gradient(45deg, #e0c3fc 0%, #8ec5fc 100%);
+            border-radius: 20px;
         }
         
-        /* 切换按钮 */
-        .btn-group {
-            margin-top: 40px;
-            display: flex;
-            gap: 15px;
-            z-index: 2;
-        }
-        
-        .btn {
-            padding: 12px 25px;
-            border: none;
-            border-radius: 50px;
-            background: #ff6b8b;
-            color: white;
-            font-size: 16px;
-            font-weight: 500;
-            cursor: pointer;
-            box-shadow: 0 4px 12px rgba(255,107,139,0.3);
-            transition: all 0.3s;
-        }
-        
-        .btn:hover {
-            background: #ff476f;
-            transform: translateY(-2px);
-        }
-        
-        /* 动画定义 */
-        /* 弹跳动画 */
-        @keyframes bounce {
-            0% { transform: translateY(0); }
-            100% { transform: translateY(-10px); }
-        }
-        
-        /* 漂浮动画（主气泡） */
-        @keyframes float {
-            0% { transform: translateY(0) rotate(0deg); }
-            50% { transform: translateY(-15px) rotate(2deg); }
-            100% { transform: translateY(0) rotate(0deg); }
-        }
-        
-        /* 呼吸效果 */
-        @keyframes pulse {
-            0% { box-shadow: 0 8px 24px rgba(0,0,0,0.15); }
-            100% { box-shadow: 0 12px 32px rgba(255,107,139,0.25); }
-        }
-        
-        /* 文字渐入 */
-        @keyframes fadeInUp {
+        /* 气泡核心动画：渐入→漂浮→渐出 */
+        @keyframes bubble-animation {
             0% {
                 opacity: 0;
-                transform: translateY(20px);
-            }
-            100% {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        
-        /* 随机漂浮（小气泡） */
-        @keyframes float-random {
-            0% {
-                transform: translateY(100vh) rotate(0deg);
-                opacity: 0;
+                transform: translateY(100vh) rotate(0deg) scale(0.8);
             }
             10% {
                 opacity: 1;
+                transform: translateY(calc(100vh - 200px)) rotate(5deg) scale(1);
+            }
+            30% {
+                transform: translateY(calc(100vh - 300px)) rotate(-5deg) scale(1.05);
+            }
+            50% {
+                transform: translateY(calc(100vh - 400px)) rotate(5deg) scale(1);
+            }
+            70% {
+                transform: translateY(calc(100vh - 500px)) rotate(-5deg) scale(0.95);
             }
             90% {
                 opacity: 1;
+                transform: translateY(calc(100vh - 600px)) rotate(5deg) scale(0.9);
             }
             100% {
-                transform: translateY(-100px) rotate(360deg);
                 opacity: 0;
+                transform: translateY(-100px) rotate(-5deg) scale(0.8);
             }
         }
         
-        /* 微信适配 */
-        @media (max-width: 768px) {
-            .title {
-                font-size: 24px;
-                margin-bottom: 30px;
+        /* 适配小屏手机 */
+        @media (max-width: 480px) {
+            .blessing-bubble {
+                padding: 15px 22px;
+                font-size: 16px;
             }
-            .main-bubble {
-                padding: 25px 30px;
-                font-size: 20px;
-            }
-            .btn {
-                padding: 10px 20px;
-                font-size: 15px;
+            .bubble-type-4 {
+                padding: 20px;
             }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1 class="title">✨ 祝福语动画 ✨</h1>
-        <div class="main-bubble" id="mainBubble">
-            <span class="text-animate">愿你每天都有小美好 💖</span>
-        </div>
-        <div class="btn-group">
-            <button class="btn" id="changeBtn">换一句祝福语</button>
-            <button class="btn" id="copyBtn">复制祝福语</button>
-        </div>
-    </div>
+    <div class="container" id="container"></div>
 
     <script>
-        // 祝福语库（可自行扩展）
+        // 海量祝福语库（可自行扩展）
         const blessings = [
+            // 日常问候
             "早安☀️ 新的一天元气满满",
             "晚安🌙 愿好梦伴你入眠",
-            "生日快乐🎂 岁岁年年皆如意",
-            "春节快乐🧧 阖家幸福安康",
-            "有你这样的朋友真好👭",
-            "我爱你💓 不止今天每一天",
-            "工作顺利💼 步步高升",
+            "今天也要开开心心哦～",
+            "累了就歇会儿，别太辛苦啦",
+            "天气真好，适合出门走走✨",
+            "愿你每天都有小美好💖",
+            "喝杯热茶，暖暖身子吧☕",
             "生活有点甜，烦恼全不见🍬",
             "保持好心情，万事皆顺意😊",
-            "愿你想要的都得到🎁 天天开心",
+            "平凡的日子也值得被温柔对待",
+            
+            // 节日祝福
+            "春节快乐🧧 阖家幸福安康",
+            "元宵节快乐🏮 团团圆圆",
             "情人节快乐💘 爱意满满",
+            "妇女节快乐💐 做最美的自己",
+            "劳动节快乐💪 辛苦啦",
+            "母亲节快乐❤️ 感恩有你",
+            "儿童节快乐🎈 童心未泯",
+            "端午节安康🍙 平安喜乐",
+            "中秋节快乐🥮 月圆人圆",
+            "国庆节快乐🇨🇳 盛世安康",
+            "圣诞节快乐🎄 喜乐常伴",
+            
+            // 生日祝福
+            "生日快乐🎂 岁岁年年皆如意",
+            "恭喜解锁新一岁🎊 万事顺意",
+            "生辰喜乐✨ 未来皆可期",
+            "愿你想要的都得到🎁 生日快乐",
+            "又长大一岁啦🥳 要更可爱哦",
+            
+            // 爱情祝福
+            "我爱你💓 不止今天每一天",
+            "有你在的日子都超甜🍬",
+            "想和你岁岁年年👩‍❤️‍👨",
+            "你是我的满心欢喜💖",
+            "余生漫漫 皆是你✨",
+            
+            // 友情祝福
+            "有你这样的朋友真好👭",
             "愿我们的友谊长长久久🤝",
-            "累了就歇会儿，别太辛苦啦❤️",
-            "生辰喜乐✨ 未来皆可期"
+            "一起变成更好的人吧✨",
+            "谢谢你一直都在💖",
+            "好朋友就是要一辈子👫",
+            
+            // 职场祝福
+            "工作顺利💼 步步高升",
+            "加油💪 你超棒的",
+            "愿你前程似锦🌟 未来可期",
+            "升职加薪💰 指日可待",
+            "付出终有回报✨ 继续努力"
         ];
 
-        // DOM元素
-        const mainBubble = document.getElementById('mainBubble');
-        const changeBtn = document.getElementById('changeBtn');
-        const copyBtn = document.getElementById('copyBtn');
-        let currentIndex = 0;
-
-        // 创建随机漂浮小气泡
-        function createFloatBubbles() {
-            const bubbleTypes = ['', 'cloud', 'star', 'capsule'];
-            const bubbleCount = 15; // 气泡数量
-
-            for (let i = 0; i < bubbleCount; i++) {
-                const bubble = document.createElement('div');
-                const type = bubbleTypes[Math.floor(Math.random() * bubbleTypes.length)];
-                bubble.className = `float-bubble ${type}`;
-                
-                // 随机尺寸、位置、动画时长
-                const size = Math.random() * 40 + 20; // 20-60px
-                const left = Math.random() * 100; // 0-100%
-                const duration = Math.random() * 15 + 10; // 10-25秒
-                const delay = Math.random() * 10; // 0-10秒延迟
-
-                // 设置样式
-                bubble.style.width = `${size}px`;
-                bubble.style.height = `${size}px`;
-                bubble.style.left = `${left}%`;
-                bubble.style.animationDuration = `${duration}s`;
-                bubble.style.animationDelay = `${delay}s`;
-
-                document.body.appendChild(bubble);
-
-                // 动画结束后移除，重新创建
-                setTimeout(() => {
-                    bubble.remove();
-                    // 循环创建
-                    setTimeout(() => createFloatBubbles(), 0);
-                }, (duration + delay) * 1000);
-            }
-        }
-
-        // 切换祝福语（带动画）
-        function changeBlessing() {
-            currentIndex = (currentIndex + 1) % blessings.length;
-            const newText = blessings[currentIndex];
-            
-            // 先清空并隐藏文字，再添加新文字和动画
-            mainBubble.innerHTML = '';
-            const newSpan = document.createElement('span');
-            newSpan.className = 'text-animate';
-            newSpan.textContent = newText;
-            mainBubble.appendChild(newSpan);
-        }
-
-        // 复制祝福语
-        function copyBlessing() {
-            const text = mainBubble.textContent.trim();
-            navigator.clipboard.writeText(text).then(() => {
-                // 简单提示（微信内弹窗受限，用文字提示）
-                alert('复制成功 ✅ 可直接粘贴到微信发送');
-            }).catch(err => {
-                alert('复制失败，请手动复制：' + text);
-            });
-        }
-
-        // 初始化
-        window.onload = function() {
-            // 创建漂浮气泡
-            createFloatBubbles();
-            // 绑定事件
-            changeBtn.addEventListener('click', changeBlessing);
-            copyBtn.addEventListener('click', copyBlessing);
+        // 气泡样式类型
+        const bubbleTypes = ['bubble-type-1', 'bubble-type-2', 'bubble-type-3', 'bubble-type-4', 'bubble-type-5'];
+        const container = document.getElementById('container');
+        
+        // 配置项（可自定义调整）
+        const config = {
+            bubbleCount: 8,          // 同时最大气泡数量
+            animationDuration: 8,    // 单个气泡动画时长（秒）
+            createInterval: 2,       // 生成新气泡的间隔（秒）
+            minLeft: 5,              // 气泡左侧最小位置（%）
+            maxLeft: 85              // 气泡左侧最大位置（%）
         };
+
+        // 生成随机祝福语
+        function getRandomBlessing() {
+            const randomIndex = Math.floor(Math.random() * blessings.length);
+            return blessings[randomIndex];
+        }
+
+        // 生成随机气泡样式
+        function getRandomBubbleType() {
+            const randomIndex = Math.floor(Math.random() * bubbleTypes.length);
+            return bubbleTypes[randomIndex];
+        }
+
+        // 生成随机左侧位置（%）
+        function getRandomLeft() {
+            return Math.floor(Math.random() * (config.maxLeft - config.minLeft) + config.minLeft);
+        }
+
+        // 创建单个气泡
+        function createBubble() {
+            // 限制同时存在的气泡数量，避免卡顿
+            const currentBubbles = document.querySelectorAll('.blessing-bubble');
+            if (currentBubbles.length >= config.bubbleCount) return;
+
+            // 创建气泡元素
+            const bubble = document.createElement('div');
+            bubble.className = `blessing-bubble ${getRandomBubbleType()}`;
+            bubble.textContent = getRandomBlessing();
+            
+            // 设置随机位置
+            bubble.style.left = `${getRandomLeft()}%`;
+            
+            // 设置随机动画时长（±2秒）
+            const randomDuration = config.animationDuration + (Math.random() * 4 - 2);
+            bubble.style.animationDuration = `${randomDuration}s`;
+            
+            // 添加到页面
+            container.appendChild(bubble);
+            
+            // 动画结束后移除气泡
+            setTimeout(() => {
+                bubble.remove();
+            }, randomDuration * 1000);
+        }
+
+        // 初始化：循环创建气泡
+        function init() {
+            // 立即创建第一批气泡
+            for (let i = 0; i < 3; i++) {
+                setTimeout(createBubble, i * 500);
+            }
+            
+            // 定时创建新气泡
+            setInterval(createBubble, config.createInterval * 1000);
+        }
+
+        // 页面加载完成后启动
+        window.addEventListener('load', init);
     </script>
 </body>
 </html>
