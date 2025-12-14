@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>可爱气泡祝福语生成器</title>
+    <meta name="description" content="超萌气泡祝福语生成，节日祝福、日常问候、生日祝福一键生成分享">
+    <!-- 引入样式 -->
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(120deg, #fdfbfb 0%, #ebedee 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.08);
+        }
+        
+        h1 {
+            text-align: center;
+            color: #ff6b8b;
+            margin-bottom: 30px;
+            font-size: 28px;
+            text-shadow: 2px 2px 4px rgba(255,107,139,0.2);
+        }
+        
+        .generator-box {
+            margin-bottom: 30px;
+        }
+        
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            overflow-x: auto;
+            padding-bottom: 10px;
+        }
+        
+        .tab-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 50px;
+            background: #f8f9fa;
+            color: #666;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.3s;
+        }
+        
+        .tab-btn.active {
+            background: #ff6b8b;
+            color: white;
+            box-shadow: 0 4px 12px rgba(255,107,139,0.3);
+        }
+        
+        .bubble-styles {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .bubble-style {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid transparent;
+        }
+        
+        .bubble-style.active {
+            border-color: #ff6b8b;
+            transform: scale(1.1);
+            box-shadow: 0 4px 12px rgba(255,107,139,0.2);
+        }
+        
+        .bubble-round {
+            background: linear-gradient(45deg, #ff9a9e 0%, #fad0c4 99%);
+            border-radius: 50%;
+        }
+        
+        .bubble-cloud {
+            background: linear-gradient(45deg, #84fab0 0%, #8fd3f4 100%);
+            border-radius: 50% 50% 30% 50%;
+        }
+        
+        .bubble-capsule {
+            background: linear-gradient(45deg, #ffecd2 0%, #fcb69f 100%);
+            border-radius: 50px;
+            width: 60px;
+        }
+        
+        .bubble-star {
+            background: linear-gradient(45deg, #ffd1ff 0%, #fa8bff 100%);
+            clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+        }
+        
+        .preview-box {
+            min-height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 20px 0;
+            position: relative;
+        }
+        
+        .bubble-preview {
+            padding: 25px 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: white;
+            font-size: 20px;
+            font-weight: 500;
+            max-width: 90%;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+            transition: all 0.3s;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .bubble-preview::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 5px;
+            left: 5px;
+            border-radius: inherit;
+            background: rgba(0,0,0,0.05);
+            z-index: -1;
+        }
+        
+        .controls {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary {
+            background: #ff6b8b;
+            color: white;
+            box-shadow: 0 4px 12px rgba(255,107,139,0.3);
+        }
+        
+        .btn-primary:hover {
+            background: #ff476f;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(255,107,139,0.4);
+        }
+        
+        .btn-secondary {
+            background: #f8f9fa;
+            color: #666;
+        }
+        
+        .btn-secondary:hover {
+            background: #e9ecef;
+            transform: translateY(-2px);
+        }
+        
+        .tips {
+            text-align: center;
+            margin-top: 20px;
+            color: #999;
+            font-size: 14px;
+        }
+        
+        .copied-toast {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-size: 16px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            z-index: 9999;
+        }
+        
+        .copied-toast.show {
+            opacity: 1;
+        }
+        
+        /* 微信适配 */
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px 15px;
+                border-radius: 15px;
+            }
+            
+            h1 {
+                font-size: 24px;
+                margin-bottom: 20px;
+            }
+            
+            .bubble-preview {
+                padding: 20px 25px;
+                font-size: 18px;
+            }
+            
+            .btn {
+                padding: 10px 20px;
+                font-size: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>✨ 可爱气泡祝福语生成器 ✨</h1>
+        
+        <div class="generator-box">
+            <!-- 祝福语分类标签 -->
+            <div class="tabs">
+                <button class="tab-btn active" data-type="daily">日常问候</button>
+                <button class="tab-btn" data-type="festival">节日祝福</button>
+                <button class="tab-btn" data-type="birthday">生日祝福</button>
+                <button class="tab-btn" data-type="love">甜蜜告白</button>
+                <button class="tab-btn" data-type="friend">友情祝福</button>
+                <button class="tab-btn" data-type="work">职场祝福</button>
+            </div>
+            
+            <!-- 气泡样式选择 -->
+            <div class="bubble-styles">
+                <div class="bubble-style bubble-round active" data-style="round"></div>
+                <div class="bubble-style bubble-cloud" data-style="cloud"></div>
+                <div class="bubble-style bubble-capsule" data-style="capsule"></div>
+                <div class="bubble-style bubble-star" data-style="star"></div>
+            </div>
+            
+            <!-- 预览区域 -->
+            <div class="preview-box">
+                <div class="bubble-preview bubble-round">愿你每天都有小美好 💖</div>
+            </div>
+            
+            <!-- 操作按钮 -->
+            <div class="controls">
+                <button class="btn btn-primary" id="generateBtn">随机生成祝福语</button>
+                <button class="btn btn-secondary" id="copyBtn">复制祝福语</button>
+                <button class="btn btn-secondary" id="shareBtn">分享到微信</button>
+            </div>
+            
+            <div class="tips">💡 提示：点击气泡样式可切换，生成后可直接复制到微信发送</div>
+        </div>
+    </div>
+    
+    <!-- 复制成功提示 -->
+    <div class="copied-toast" id="copiedToast">复制成功 ✅</div>
+
+    <script>
+        // 祝福语数据库
+        const blessings = {
+            daily: [
+                "早安☀️ 新的一天元气满满",
+                "晚安🌙 愿好梦伴你入眠",
+                "今天也要开开心心哦～",
+                "累了就歇会儿，别太辛苦啦",
+                "天气真好，适合出门走走✨",
+                "愿你每天都有小美好💖",
+                "喝杯热茶，暖暖身子吧☕",
+                "生活有点甜，烦恼全不见🍬",
+                "保持好心情，万事皆顺意😊",
+                "平凡的日子也值得被温柔对待"
+            ],
+            festival: [
+                "春节快乐🧧 阖家幸福安康",
+                "元宵节快乐🏮 团团圆圆",
+                "情人节快乐💘 爱意满满",
+                "妇女节快乐💐 做最美的自己",
+                "清明节安康🙏 缅怀故人",
+                "劳动节快乐💪 辛苦啦",
+                "母亲节快乐❤️ 感恩有你",
+                "儿童节快乐🎈 童心未泯",
+                "端午节安康🍙 平安喜乐",
+                "七夕节快乐💓 甜蜜久久",
+                "中秋节快乐🥮 月圆人圆",
+                "国庆节快乐🇨🇳 盛世安康",
+                "圣诞节快乐🎄 喜乐常伴"
+            ],
+            birthday: [
+                "生日快乐🎂 岁岁年年皆如意",
+                "恭喜解锁新一岁🎊 万事顺意",
+                "生辰喜乐✨ 未来皆可期",
+                "愿你想要的都得到🎁 生日快乐",
+                "又长大一岁啦🥳 要更可爱哦",
+                "生日快乐🎈 每天都闪闪发光",
+                "祝你不止生日快乐🎀 日日都快乐",
+                "生辰快乐🍰 平安喜乐常伴"
+            ],
+            love: [
+                "我爱你💓 不止今天每一天",
+                "有你在的日子都超甜🍬",
+                "想和你岁岁年年👩‍❤️‍👨",
+                "你是我的满心欢喜💖",
+                "余生漫漫 皆是你✨",
+                "我的心动都是你💘",
+                "和你在一起就是最好的时光⏳",
+                "你是藏在我心底的温柔💌"
+            ],
+            friend: [
+                "有你这样的朋友真好👭",
+                "愿我们的友谊长长久久🤝",
+                "一起变成更好的人吧✨",
+                "谢谢你一直都在💖",
+                "闺蜜/兄弟万岁🥳",
+                "愿我们岁岁常欢愉🥂",
+                "好朋友就是要一辈子👫"
+            ],
+            work: [
+                "工作顺利💼 步步高升",
+                "加油💪 你超棒的",
+                "愿你前程似锦🌟 未来可期",
+                "升职加薪💰 指日可待",
+                "工作再忙也要记得休息😘",
+                "愿你职场一路开挂🚀",
+                "付出终有回报✨ 继续努力"
+            ]
+        };
+
+        // DOM元素
+        const tabBtns = document.querySelectorAll('.tab-btn');
+        const bubbleStyles = document.querySelectorAll('.bubble-style');
+        const bubblePreview = document.querySelector('.bubble-preview');
+        const generateBtn = document.getElementById('generateBtn');
+        const copyBtn = document.getElementById('copyBtn');
+        const shareBtn = document.getElementById('shareBtn');
+        const copiedToast = document.getElementById('copiedToast');
+        
+        let currentType = 'daily';
+        let currentStyle = 'round';
+
+        // 切换分类标签
+        tabBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                tabBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentType = btn.dataset.type;
+                generateBlessing(); // 切换分类后自动生成
+            });
+        });
+
+        // 切换气泡样式
+        bubbleStyles.forEach(style => {
+            style.addEventListener('click', () => {
+                bubbleStyles.forEach(s => s.classList.remove('active'));
+                style.classList.add('active');
+                currentStyle = style.dataset.style;
+                
+                // 更新预览气泡样式
+                bubblePreview.className = '';
+                bubblePreview.classList.add('bubble-preview', `bubble-${currentStyle}`);
+            });
+        });
+
+        // 生成随机祝福语
+        function generateBlessing() {
+            const blessingList = blessings[currentType];
+            const randomIndex = Math.floor(Math.random() * blessingList.length);
+            bubblePreview.textContent = blessingList[randomIndex];
+        }
+
+        // 复制祝福语
+        function copyBlessing() {
+            const text = bubblePreview.textContent;
+            navigator.clipboard.writeText(text).then(() => {
+                // 显示复制成功提示
+                copiedToast.classList.add('show');
+                setTimeout(() => {
+                    copiedToast.classList.remove('show');
+                }, 2000);
+            }).catch(err => {
+                alert('复制失败，请手动复制：' + text);
+            });
+        }
+
+        // 分享到微信（微信内触发分享）
+        function shareToWechat() {
+            if (/MicroMessenger/i.test(navigator.userAgent)) {
+                alert('已为您准备好祝福语，可长按复制后发送给好友～');
+                // 微信内可调用JSSDK实现原生分享，此处简化处理
+            } else {
+                alert('请在微信中打开本页面，可直接分享给好友哦～');
+            }
+        }
+
+        // 绑定事件
+        generateBtn.addEventListener('click', generateBlessing);
+        copyBtn.addEventListener('click', copyBlessing);
+        shareBtn.addEventListener('click', shareToWechat);
+
+        // 页面加载时生成第一个祝福语
+        generateBlessing();
+    </script>
+</body>
+</html>
