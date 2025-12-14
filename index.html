@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>日常问候气泡动画</title>
-    <meta name="description" content="微信专属｜日常问候多气泡自动浮现消失动画">
+    <title>圣诞快乐喵</title>
+    <meta name="description" content="微信专属｜圣诞主题日常问候多气泡自动浮现消失动画">
     <style>
         * {
             margin: 0;
@@ -15,8 +15,12 @@
         }
         
         body {
-            /* 温馨浅色系背景，与气泡颜色不重合 */
-            background: linear-gradient(120deg, #f5f7fa 0%, #e4eaf5 100%);
+            /* 圣诞主题背景：红绿色渐变+轻量雪花纹理，温馨不刺眼 */
+            background: linear-gradient(135deg, #f0e6d2 0%, #d64b4b 30%, #2d6a4f 80%);
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.05) 90%),
+                url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23ffffff' fill-opacity='0.08' fill-rule='evenodd'/%3E%3C/svg%3E");
+            background-attachment: fixed;
             min-height: 100vh;
             overflow: hidden; /* 禁止滚动 */
             position: relative;
@@ -31,7 +35,7 @@
             overflow: hidden;
         }
         
-        /* 通用气泡样式 */
+        /* 通用气泡样式（适配圣诞主题调整颜色对比度） */
         .blessing-bubble {
             position: absolute;
             padding: 20px 28px;
@@ -39,7 +43,7 @@
             font-size: 18px;
             font-weight: 500;
             text-align: center;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.18);
             border-radius: 50px;
             z-index: 10;
             /* 核心动画：浮现→漂浮→消失 */
@@ -49,15 +53,12 @@
             /* 固定最大宽度，确保不超屏 */
             max-width: 280px;
             /* 强制不超出容器 */
-            left: 0;
-            right: 0;
-            margin-left: auto;
-            margin-right: auto;
+            position: absolute;
         }
         
-        /* 气泡样式1：圆形渐变 */
+        /* 气泡样式1：圣诞红渐变（圆形） */
         .bubble-type-1 {
-            background: linear-gradient(45deg, #ff9a9e 0%, #fad0c4 99%);
+            background: linear-gradient(45deg, #d64b4b 0%, #ff8a80 99%);
             border-radius: 50%;
             /* 圆形气泡固定尺寸，避免变形 */
             width: 220px;
@@ -68,28 +69,28 @@
             padding: 20px;
         }
         
-        /* 气泡样式2：云朵形渐变 */
+        /* 气泡样式2：圣诞绿渐变（云朵形） */
         .bubble-type-2 {
-            background: linear-gradient(45deg, #84fab0 0%, #8fd3f4 100%);
+            background: linear-gradient(45deg, #2d6a4f 0%, #52b788 100%);
             border-radius: 50% 50% 30% 50%;
             max-width: 240px;
         }
         
-        /* 气泡样式3：胶囊形渐变 */
+        /* 气泡样式3：圣诞金渐变（胶囊形） */
         .bubble-type-3 {
-            background: linear-gradient(45deg, #ffecd2 0%, #fcb69f 100%);
+            background: linear-gradient(45deg, #e9c46a 0%, #f4a261 100%);
             border-radius: 50px;
             max-width: 260px;
         }
         
-        /* 气泡样式5：方形圆角渐变 */
+        /* 气泡样式5：圣诞蓝渐变（方形圆角） */
         .bubble-type-5 {
-            background: linear-gradient(45deg, #e0c3fc 0%, #8ec5fc 100%);
+            background: linear-gradient(45deg, #1d3557 0%, #457b9d 100%);
             border-radius: 20px;
             max-width: 250px;
         }
         
-        /* 气泡核心动画：渐入→漂浮→渐出 */
+        /* 气泡核心动画：渐入→漂浮→渐出（圣诞主题调整旋转角度更柔和） */
         @keyframes bubble-animation {
             0% {
                 opacity: 0;
@@ -97,24 +98,24 @@
             }
             10% {
                 opacity: 1;
-                transform: translateY(calc(100vh - 200px)) rotate(3deg) scale(1);
+                transform: translateY(calc(100vh - 150px)) rotate(2deg) scale(1);
             }
             30% {
-                transform: translateY(calc(100vh - 300px)) rotate(-3deg) scale(1.05);
+                transform: translateY(calc(100vh - 300px)) rotate(-2deg) scale(1.05);
             }
             50% {
-                transform: translateY(calc(100vh - 400px)) rotate(3deg) scale(1);
+                transform: translateY(calc(100vh - 450px)) rotate(2deg) scale(1);
             }
             70% {
-                transform: translateY(calc(100vh - 500px)) rotate(-3deg) scale(0.95);
+                transform: translateY(calc(100vh - 600px)) rotate(-2deg) scale(0.95);
             }
             90% {
                 opacity: 1;
-                transform: translateY(calc(100vh - 600px)) rotate(3deg) scale(0.9);
+                transform: translateY(calc(100vh - 750px)) rotate(2deg) scale(0.9);
             }
             100% {
                 opacity: 0;
-                transform: translateY(-100px) rotate(-3deg) scale(0.8);
+                transform: translateY(-100px) rotate(-2deg) scale(0.8);
             }
         }
         
@@ -158,7 +159,7 @@
     <div class="container" id="container"></div>
 
     <script>
-        // 50条纯日常问候祝福语库（无重复、风格温馨）
+        // 50条纯日常问候祝福语库（适配圣诞氛围，保留温馨感）
         const blessings = [
             "早安☀️ 新的一天元气满满",
             "晚安🌙 愿好梦伴你入眠",
@@ -213,18 +214,18 @@
             "细碎的美好，拼凑成温柔的日常✨"
         ];
 
-        // 移除星星形，仅保留4种气泡样式
+        // 仅保留4种圣诞主题气泡样式
         const bubbleTypes = ['bubble-type-1', 'bubble-type-2', 'bubble-type-3', 'bubble-type-5'];
         const container = document.getElementById('container');
         
-        // 优化后的配置项（确保气泡不超屏）
+        // 最终配置项（生成间隔改为1秒）
         const config = {
             bubbleCount: 15,          // 同时最大气泡数量
             animationDuration: 10,    // 单个气泡动画时长（秒）
-            createInterval: 0.7,      // 生成新气泡的间隔（秒）
-            // 位置范围优化：结合气泡宽度，确保不超屏
-            minLeft: 5,               // 气泡左侧最小位置（%）
-            maxLeft: 90               // 气泡左侧最大位置（%）
+            createInterval: 1,        // 生成新气泡的间隔改为1秒
+            // 位置范围优化：更大范围确保随机分布
+            minLeft: 2,               // 气泡左侧最小位置（%）
+            maxLeft: 95               // 气泡左侧最大位置（%）
         };
 
         // 生成随机祝福语
@@ -239,20 +240,27 @@
             return bubbleTypes[randomIndex];
         }
 
-        // 生成安全的随机位置（确保气泡完全在屏幕内）
-        function getRandomLeft() {
-            // 根据屏幕宽度动态计算，避免气泡超出
+        // 生成完全随机的安全位置（左右+上下初始位置都随机，确保不超屏）
+        function getRandomPosition() {
             const screenWidth = window.innerWidth;
-            const bubbleMaxWidth = 320; // 气泡最大宽度
-            const maxSafeLeft = screenWidth - bubbleMaxWidth - 20; // 留出20px边距
-            const leftPercent = Math.floor(Math.random() * (config.maxLeft - config.minLeft) + config.minLeft);
-            
-            // 转换为像素值，确保绝对不超屏
-            const leftPx = (screenWidth * leftPercent) / 100;
-            return Math.min(leftPx, maxSafeLeft) + 'px';
+            const screenHeight = window.innerHeight;
+            const bubbleMaxWidth = 320;
+            const bubbleMaxHeight = 260;
+
+            // 随机左侧位置（确保气泡右侧不超屏）
+            const maxSafeLeft = screenWidth - bubbleMaxWidth - 10;
+            const left = Math.floor(Math.random() * maxSafeLeft) + 10;
+
+            // 随机初始垂直位置（底部区域随机，避免气泡扎堆）
+            const startY = screenHeight + Math.floor(Math.random() * 200);
+
+            return {
+                left: `${left}px`,
+                startY: startY
+            };
         }
 
-        // 创建单个气泡（确保不超屏）
+        // 创建单个气泡（完全随机位置，不超屏）
         function createBubble() {
             // 限制同时存在的气泡数量，避免卡顿和重叠
             const currentBubbles = document.querySelectorAll('.blessing-bubble');
@@ -264,14 +272,14 @@
             bubble.className = `blessing-bubble ${bubbleType}`;
             bubble.textContent = getRandomBlessing();
             
-            // 设置安全的随机位置（像素值，避免百分比超屏）
-            bubble.style.left = getRandomLeft();
-            // 取消margin:auto，改用left确保位置随机且不超屏
-            bubble.style.marginLeft = '0';
-            bubble.style.marginRight = '0';
+            // 获取随机安全位置
+            const position = getRandomPosition();
+            bubble.style.left = position.left;
+            // 初始Y轴位置随机，让气泡从底部不同位置升起
+            bubble.style.top = `${position.startY}px`;
             
-            // 设置随机动画时长（±2秒），避免气泡同步消失
-            const randomDuration = config.animationDuration + (Math.random() * 4 - 2);
+            // 设置随机动画时长（±3秒），让气泡漂浮节奏更随机
+            const randomDuration = config.animationDuration + (Math.random() * 6 - 3);
             bubble.style.animationDuration = `${randomDuration}s`;
             
             // 添加到页面
@@ -285,22 +293,23 @@
 
         // 初始化：循环创建气泡
         function init() {
-            // 立即创建第一批气泡（6个，快速铺满但不拥挤）
-            for (let i = 0; i < 6; i++) {
-                setTimeout(createBubble, i * 250);
+            // 立即创建第一批气泡（8个，圣诞氛围更浓郁）
+            for (let i = 0; i < 8; i++) {
+                setTimeout(createBubble, i * 200);
             }
             
-            // 定时创建新气泡
+            // 定时创建新气泡（间隔1秒）
             setInterval(createBubble, config.createInterval * 1000);
         }
 
         // 页面加载完成后启动，适配屏幕尺寸
         window.addEventListener('load', init);
-        // 屏幕尺寸变化时重新计算位置（适配旋转）
+        // 屏幕尺寸变化/旋转时重新调整现有气泡位置，确保不超屏
         window.addEventListener('resize', () => {
             const bubbles = document.querySelectorAll('.blessing-bubble');
             bubbles.forEach(bubble => {
-                bubble.style.left = getRandomLeft();
+                const position = getRandomPosition();
+                bubble.style.left = position.left;
             });
         });
     </script>
