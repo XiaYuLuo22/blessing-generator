@@ -240,27 +240,20 @@
             return bubbleTypes[randomIndex];
         }
 
-        // 生成完全随机的安全位置（左右+上下初始位置都随机，确保不超屏）
-        function getRandomPosition() {
+        // 生成安全的随机位置（确保气泡完全在屏幕内）
+        function getRandomLeft() {
+            // 根据屏幕宽度动态计算，避免气泡超出
             const screenWidth = window.innerWidth;
-            const screenHeight = window.innerHeight;
-            const bubbleMaxWidth = 320;
-            const bubbleMaxHeight = 260;
-
-            // 随机左侧位置（确保气泡右侧不超屏）
-            const maxSafeLeft = screenWidth - bubbleMaxWidth - 10;
-            const left = Math.floor(Math.random() * maxSafeLeft) + 10;
-
-            // 随机初始垂直位置（底部区域随机，避免气泡扎堆）
-            const startY = screenHeight + Math.floor(Math.random() * 200);
-
-            return {
-                left: `${left}px`,
-                startY: startY
-            };
+            const bubbleMaxWidth = 320; // 气泡最大宽度
+            const maxSafeLeft = screenWidth - bubbleMaxWidth - 20; // 留出20px边距
+            const leftPercent = Math.floor(Math.random() * (config.maxLeft - config.minLeft) + config.minLeft);
+            
+            // 转换为像素值，确保绝对不超屏
+            const leftPx = (screenWidth * leftPercent) / 100;
+            return Math.min(leftPx, maxSafeLeft) + 'px';
         }
 
-        // 创建单个气泡（完全随机位置，不超屏）
+        // 创建单个气泡（确保不超屏）
         function createBubble() {
             // 限制同时存在的气泡数量，避免卡顿和重叠
             const currentBubbles = document.querySelectorAll('.blessing-bubble');
@@ -272,14 +265,14 @@
             bubble.className = `blessing-bubble ${bubbleType}`;
             bubble.textContent = getRandomBlessing();
             
-            // 获取随机安全位置
-            const position = getRandomPosition();
-            bubble.style.left = position.left;
-            // 初始Y轴位置随机，让气泡从底部不同位置升起
-            bubble.style.top = `${position.startY}px`;
+            // 设置安全的随机位置（像素值，避免百分比超屏）
+            bubble.style.left = getRandomLeft();
+            // 取消margin:auto，改用left确保位置随机且不超屏
+            bubble.style.marginLeft = '0';
+            bubble.style.marginRight = '0';
             
-            // 设置随机动画时长（±3秒），让气泡漂浮节奏更随机
-            const randomDuration = config.animationDuration + (Math.random() * 6 - 3);
+            // 设置随机动画时长（±2秒），避免气泡同步消失
+            const randomDuration = config.animationDuration + (Math.random() * 4 - 2);
             bubble.style.animationDuration = `${randomDuration}s`;
             
             // 添加到页面
@@ -293,23 +286,22 @@
 
         // 初始化：循环创建气泡
         function init() {
-            // 立即创建第一批气泡（8个，圣诞氛围更浓郁）
-            for (let i = 0; i < 8; i++) {
-                setTimeout(createBubble, i * 200);
+            // 立即创建第一批气泡（6个，快速铺满但不拥挤）
+            for (let i = 0; i < 6; i++) {
+                setTimeout(createBubble, i * 250);
             }
             
-            // 定时创建新气泡（间隔1秒）
+            // 定时创建新气泡
             setInterval(createBubble, config.createInterval * 1000);
         }
 
         // 页面加载完成后启动，适配屏幕尺寸
         window.addEventListener('load', init);
-        // 屏幕尺寸变化/旋转时重新调整现有气泡位置，确保不超屏
+        // 屏幕尺寸变化时重新计算位置（适配旋转）
         window.addEventListener('resize', () => {
             const bubbles = document.querySelectorAll('.blessing-bubble');
             bubbles.forEach(bubble => {
-                const position = getRandomPosition();
-                bubble.style.left = position.left;
+                bubble.style.left = getRandomLeft();
             });
         });
     </script>
